@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "ts-node src/test.ts",
-    "start": "ts-node src/index.ts",
-    "build": "tsc && cp package.json dist/"
+    "dev": "ts-node src/index.ts",
+    "start": "node src/index.js",
+    "build": ""
   },
   "keywords": [],
   "author": "",
