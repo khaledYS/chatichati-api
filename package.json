@@ -6,8 +6,7 @@
   "scripts": {
     "test": "ts-node src/test.ts",
     "dev": "ts-node src/index.ts",
-    "start": "node src/index.js",
-    "build": ""
+    "start": "node src/index.js"
   },
   "keywords": [],
   "author": "",
