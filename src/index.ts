@@ -1,5 +1,4 @@
-import { MongoClient } from "mongodb";
-
+const {MongoClient} = require("mongodb");
 const express = require("express");
 const body = require("body-parser");
 const cors = require("cors");
@@ -10,7 +9,7 @@ async function start() {
     try{
 
         const app = express();
-        const mongo = await MongoClient.connect(mongoDbUrl)
+        const mongo = new MongoClient(mongoDbUrl);
 
         await mongo.connect();
         app.db = mongo.db();
@@ -34,9 +33,13 @@ async function start() {
             res.status(200).json({message: `the server is up and running on port ${port}`})
         })
 
-        // start the server
-        app.listen(port, ()=>{
-            console.log('server is running on port {' + port + '}')
+        // start the server, only if it is connected to mongodb
+        mongo.connect(err=>{
+            if(err){ console.error(err, "hshshhsh"); return false;}
+            // connection to mongo is successful, listen for requests
+            app.listen(port, ()=>{
+                console.log('server is running on port {' + port + '}')
+            })
         })
 
 

@@ -18,7 +18,7 @@
       
       "strict": false,
     },
-    "include": ["src"],
+    "include": ["./package.json", "src"],
     "exclude": ["node_modules", "dist/*", "src/static"],
     "lib": ["es6"],
   }
