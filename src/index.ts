@@ -4,7 +4,7 @@ const express = require("express");
 const body = require("body-parser");
 const cors = require("cors");
 const port = Number(process.env.PORT) | 3000;
-const mongoDbUrl = process.env.MONGOD_URL;
+const mongoDbUrl = process.env.MONGODb_URL;
 
 async function start() {
     try{
