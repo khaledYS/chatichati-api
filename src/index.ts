@@ -29,6 +29,11 @@ async function start() {
         app.use('/api/login', require('./routes/login'))
         app.use('/api/logout', require('./routes/logout'))
 
+        // check the server is running
+        app.get("/", (req, res)=>{
+            res.status(200).json({message: `the server is up and running on port ${port}`})
+        })
+
         // start the server
         app.listen(port, ()=>{
             console.log('server is running on port {' + port + '}')
