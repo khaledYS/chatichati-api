@@ -27,6 +27,7 @@
  * Therefore, I decided to NOT delete this file For remembrance and history.
  * THIS CODE will not be updated with the new version coming up. So people shouldn't 
  * Learn, cite or use such "will be old" code.
+ * Thanks God I can Know do some frontend shit.
  * Thanks for your time. Thanks for listening to me expressing my problems.
  * I really appreciate it.
  * Githup: http://github.com/khaledYS
