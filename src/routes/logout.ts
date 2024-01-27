@@ -6,4 +6,4 @@ const router = Router();
 router.delete('/', logoutController)
 
 
-module.exports = router
+export default router;

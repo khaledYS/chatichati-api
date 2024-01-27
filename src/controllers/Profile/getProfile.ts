@@ -5,12 +5,13 @@ export async function getProfileController(req: any, res: any) {
     try {
         const { db }:dbType = req.app;
         const {id} = req.body;
-
         // check the existence of the id 
+        console.log(req.headers)
         if(!id){
             res.status(400).json({
                 message: 'you should provide Id with your request',
-                result: "no result"
+                // result: "no result"
+                result: req.body
             })
             return;
         }
@@ -22,7 +23,7 @@ export async function getProfileController(req: any, res: any) {
         
         // check if found
         if(!result){
-            res.status(400).json({
+            res.status(404).json({
                 message: `couldn't find the profile you provided with the Id :{ ${id} }`,
                 result: "no result"
             })

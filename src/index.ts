@@ -1,15 +1,18 @@
-const {MongoClient} = require("mongodb");
+import { MongoClient } from "mongodb";
 const express = require("express");
 const body = require("body-parser");
 const cors = require("cors");
+const dotenv = require("dotenv")
+dotenv.config()
+
 const port = Number(process.env.PORT) | 3000;
-const mongoDbUrl = process.env.MONGODb_URL;
+const mongoDbUri = process.env.MONGODB_URI;
 
 async function start() {
     try{
 
         const app = express();
-        const mongo = new MongoClient(mongoDbUrl);
+        const mongo = new MongoClient(mongoDbUri);
 
         await mongo.connect();
         app.db = mongo.db();
@@ -34,12 +37,8 @@ async function start() {
         })
 
         // start the server, only if it is connected to mongodb
-        mongo.connect(err=>{
-            if(err){ console.error(err); return false;}
-            // connection to mongo is successful, listen for requests
-            app.listen(port, ()=>{
-                console.log('server is running on port {' + port + '}')
-            })
+        app.listen(port, ()=>{
+            console.log('server is running on port {' + port + '}')
         })
 
 

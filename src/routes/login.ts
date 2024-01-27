@@ -12,4 +12,4 @@ export interface loginParam{
     password: string;
 }
 
-module.exports = router
+export default router;

@@ -1,9 +1,9 @@
 import { Db } from "mongodb";
 import { createProfileController } from "../controllers/Profile/createProfile";
 import { getProfileController } from "../controllers/Profile/getProfile";
+import { Router } from "express";
 
-const express = require("express");
-const router = express.Router();
+const router = Router();
 
 
 router.post("/", createProfileController)
@@ -23,4 +23,4 @@ export interface dbType{
     db: Db
 }
 
-module.exports = router
+export default router

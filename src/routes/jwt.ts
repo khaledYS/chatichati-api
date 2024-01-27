@@ -5,4 +5,4 @@ const router = Router();
 
 router.get('/verify', verifyJwtController)
 
-module.exports = router
+export default router;
