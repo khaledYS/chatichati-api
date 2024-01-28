@@ -1,7 +1,7 @@
 import { loginParam } from "../../routes/login";
 import { validate } from "../../utilities/validate";
 import { dbType } from "../../routes/profile";
-import { findOneProfileResult, profile } from "../../mongoDataTypes";
+import { RequestDb, findOneProfileResult, profile } from "../../mongoDataTypes";
 import { compareHashedPassword } from "../../utilities/hashPassword";
 import { gAa_JWT_token, verifyJWT } from "../../utilities/generateJWTtoken";
 import { Response } from "express";
@@ -9,17 +9,17 @@ import { JwtPayload, decode } from "jsonwebtoken";
 
 export async function signInWithUsernameController(req: any, res: Response) {
 	const { db }: dbType = req.app;
-	const { username, password }: loginParam = req.body;
+	const { username: reqUsername, password }: loginParam = req.body;
 
 	// check from the validity of the inputs
-	if (!username || !password) {
+	if (!reqUsername || !password) {
 		return res
 			.status(400)
 			.json({ message: "Username or password should be provided" });
 	}
 
 	//check wether the inputs are valid or not ;
-	const validityRes = validate({ username, password });
+	const validityRes = validate({ username: reqUsername, password });
 	if (!validityRes.ok) {
 		return res.status(400).json({ message: validityRes.message });
 	}
@@ -27,13 +27,14 @@ export async function signInWithUsernameController(req: any, res: Response) {
 	// finding the user
 	const result = await db
 		.collection("profiles")
-		.findOne<findOneProfileResult>({ username: username.toLowerCase() });
+		.findOne<findOneProfileResult>({ username: reqUsername.toLowerCase() });
 	if (!result) {
 		return res.status(404).json({
 			message:
 				"Couldn't find the user you are looking for, check your inputs.",
 		});
 	}
+	const {email, username} = result;
 
 	// checking the password
 	const hashedPassword = result.password;
@@ -67,28 +68,23 @@ export async function signInWithUsernameController(req: any, res: Response) {
 
 	const { exp } = decode(jwtToken) as JwtPayload;
 
-	return res
-		.status(200)
-		.cookie("jwt", jwtToken, { maxAge: exp, httpOnly: true })
-		.cookie("signed", true)
-		.cookie("username", result.username)
-		.cookie("email", result.email)
-		.json({ ok: true });
+	return loginCookieResponse({jwtToken, exp, email, username:reqUsername}, res)
+
 }
 
 export async function signInWithEmailController(req: any, res: Response) {
 	const { db }: dbType = req.app;
-	const { email, password }: loginParam = req.body;
+	const { email: reqEmail, password }: loginParam = req.body;
 
 	// check from the validity of the inputs
-	if (!email || !password) {
+	if (!reqEmail || !password) {
 		return res
 			.status(400)
 			.json({ message: "Email or password should be provided" });
 	}
 
 	//check wether the inputs are valid or not ;
-	const validityRes = validate({ email, password });
+	const validityRes = validate({ email: reqEmail, password });
 	if (!validityRes.ok) {
 		return res.status(400).json({ message: validityRes.message });
 	}
@@ -96,13 +92,14 @@ export async function signInWithEmailController(req: any, res: Response) {
 	// finding the user
 	const result = await db
 		.collection("profiles")
-		.findOne<findOneProfileResult>({ email: email.toLowerCase() });
-	if (!result) {
-		return res.status(404).json({
-			message:
+		.findOne<findOneProfileResult>({ email: reqEmail.toLowerCase() });
+		if (!result) {
+			return res.status(404).json({
+				message:
 				"Couldn't find the user you are looking for, check your inputs.",
-		});
-	}
+			});
+		}
+		const {email, username} = result;
 
 	// checking the password
 	const hashedPassword = result.password;
@@ -136,11 +133,23 @@ export async function signInWithEmailController(req: any, res: Response) {
 
 	const { exp } = decode(jwtToken) as JwtPayload;
 
+	return loginCookieResponse({jwtToken, exp, email: reqEmail, username}, res)
+}
+
+interface loginCookieResponseParamters{
+	jwtToken:string,
+	exp: number,
+	signed?: boolean,
+	username: string,
+	email:string,
+	status?: number
+}
+export function loginCookieResponse({jwtToken, exp, email, username, status=200, signed=true}:loginCookieResponseParamters, res:Response){
 	return res
-		.status(200)
+		.status(status)
 		.cookie("jwt", jwtToken, { maxAge: exp, httpOnly: true })
-		.cookie("signed", true)
-		.cookie("username", result.username)
-		.cookie("email", result.email)
+		.cookie("signed", signed)
+		.cookie("username", username)
+		.cookie("email", email)
 		.json({ ok: true });
 }

@@ -1,3 +1,5 @@
+import {Express, Request, Response} from "express" 
+import { Db } from "mongodb";
 export interface profile{
     _id: string;
     name: string;
@@ -9,3 +11,10 @@ export interface profile{
 }
 
 export type findOneProfileResult = profile | null;
+
+export interface expressDb extends Express{
+	db?: Db
+}
+export interface RequestDb extends Request{
+	app:expressDb
+}

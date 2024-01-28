@@ -1,25 +1,41 @@
-import { dbType } from "../../routes/profile";
-import { verifyJWT } from "../../utilities/generateJWTtoken";
+import { Request, Response } from "express";
+import { ProfileParamters, dbType } from "../../routes/profile";
+import { JwtPayload, verifyJWT } from "../../utilities/generateJWTtoken";
 import { validate } from "../../utilities/validate";
+import { RequestDb, expressDb } from "../../mongoDataTypes";
+import { ObjectId } from "mongodb";
 
-export async function verifyJwtController(req: any, res: any){
-    const {jwt, email, username} = req.body;
-    const {db}:dbType = req.app;
+export async function verifyJwtController(req: RequestDb, res: Response) {
+	const { email, username, signed, jwt } = req.cookies;
+    console.log(req.cookies)
+	const { db } = req.app;
 
-    //check from the provided inputs
-    const validateRes = validate({email, username});
-    if(!validateRes.ok || !jwt){
-        return res.status(400).json({ message: !validateRes.ok ? validateRes.message : "Must provide Jwt."})
+	// check from the provided inputs
+	const validateRes = validate({ email, username });
+	if (!validateRes.ok || !jwt || !signed) {
+		return res.redirect("/.netlify/functions/v1/api/logout");
+	}
+
+	// verifying jwt
+	const verifyJwtRes = verifyJWT(jwt) as {ok:boolean, message: JwtPayload};
+	if(!verifyJwtRes.ok){
+	    return res.redirect("/.netlify/functions/v1/api/logout")
+	}
+
+    // verifying the jwt matches with the email and username
+    const jwtProfile = await db.collection("profiles").findOne<ProfileParamters>({
+        _id: new ObjectId(verifyJwtRes.message.id)
+    });
+    const emailUsernameProfile = await db.collection("profiles").findOne<ProfileParamters>({
+        email: email,
+        username: username, 
+
+    });
+    console.log(jwtProfile, emailUsernameProfile, JSON.stringify(jwtProfile) !== JSON.stringify(emailUsernameProfile) )
+    if(!jwtProfile || !emailUsernameProfile ){
+	    return res.redirect("/.netlify/functions/v1/api/logout")
     }
 
-    // verifying jwt
-    const verifyJwtRes = verifyJWT(jwt);
-    if(!verifyJwtRes.ok){
-        if(verifyJwtRes.message == "JsonWebTokenError") return res.status(400).json({message: "Error with the provided jwt"})
-        else if(verifyJwtRes.message == "TokenExpiredError") return res.status(410).json({message: "The provided jwt is expired"})
-        else res.status(500).json({message: "Your jwt wasn't accepted, however the error is unknown."})
-    }
-
-    return res.status(200).json({message: verifyJwtRes.message})
-
+	// return res.status(200).json({message: verifyJwtRes.message})
+	return res.status(200).json({ message: email });
 }

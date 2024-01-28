@@ -1,7 +1,25 @@
-import { decode } from "jsonwebtoken";
-import { verifyJWT } from "./utilities/generateJWTtoken";
+const express = require("express");
+const body = require("body-parser");
+const cors = require("cors");
+const cookieParser = require("cookie-parser")
 
-console.log(decode("eyJhbddGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YjNhZjRhNWIzOTk5ODM2MjIyYzg0ZCIsImlhdCI6MTcwNjI3NDYzNCwiZXhwIjoxNzA2Mjc0NjM5fQ.AnvwKbmzq_T7XAYzz3DZTu9L9aI5wDO5Hmb3yTYktYE"));
+        const app = express();
+        // cors
+        app.use(cors())
+        app.use(cookieParser())
+        //body parser
+        app.use(body.json({
+            limit: '500kb'
+        }))
 
-(async ()=>{
-})();
+
+        // check the server is running
+        app.get("/", (req, res)=>{
+            console.log(req.cookies)
+            return res.status(200).json({message: `the server is up and running on 3000 ${3000}`})
+        })
+
+        // start the server, only if it is connected to mongodb
+        app.listen(3000, ()=>{
+            console.log('server is running on 3000 {' + 3000 + '}')
+        })

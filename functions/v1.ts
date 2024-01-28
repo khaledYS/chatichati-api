@@ -4,15 +4,15 @@ import ServerlessHttp from "serverless-http";
 import body from "body-parser"
 import cors from "cors"
 import dotenv from "dotenv"
+import cookieParser from "cookie-parser"
 import profileRouter from "../src/routes/profile"
 import jwtRouter from "../src/routes/jwt"
 import loginRouter from "../src/routes/login"
 import logoutRouter from "../src/routes/logout"
+import { expressDb } from "../src/mongoDataTypes";
+
 dotenv.config();
 
-interface expressDb extends Express{
-	db?: Db
-}
 
 const port = Number(process.env.PORT) | 3000;
 const mongoDbUri = process.env.MONGODB_URI;
@@ -27,6 +27,7 @@ const router = Router();
 
 // middlewares
 app.use(cors());
+app.use(cookieParser())
 // app.use(express.json());
 //body parser
 app.use(
@@ -43,9 +44,10 @@ router.use("/api/logout",logoutRouter);
 
 // check the server is running
 router.get("/", (req, res) => {
-	res.status(200).json({
+	return res.status(200).cookie("signed", true, {httpOnly: true}).json({
 		message: `the server is up and running on port ${port}`,
 	});
+	
 });
 
 app.use("/.netlify/functions/v1/", router)

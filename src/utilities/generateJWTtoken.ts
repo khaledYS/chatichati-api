@@ -1,9 +1,16 @@
 import dotenv from "dotenv";
-import { JsonWebTokenError, JwtPayload, TokenExpiredError, sign, verify } from "jsonwebtoken";
+import { sign, verify } from "jsonwebtoken";
 import { Db, ObjectId, UpdateResult } from "mongodb";
 
 dotenv.config();
 const secret_token = process.env.SECRET_TOKEN;
+
+export interface JwtPayload {
+	iat:number,
+	exp:number,
+	id:string
+}
+
 
 function generate_JWT_token(id: string): string {
 	// generating the token
@@ -49,9 +56,9 @@ async function gAa_JWT_token(
  * 	message: {id:string, iat:number, exp:number} | "TokenExpiredError" | "JsonWebTokenError"
  * }
  */
-function verifyJWT(JWT_token:string):{ok:boolean, message: "TokenExpiredError" | "JsonWebTokenError" | string | JwtPayload  } {
+function verifyJWT(JWT_token:string):{ok:boolean, message: JwtPayload | string } {
 	try {
-		const result = verify(JWT_token, secret_token);
+		const result = verify(JWT_token, secret_token) as JwtPayload;
 		return {
 			ok: true,
 			message: result
