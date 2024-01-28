@@ -7,7 +7,6 @@ import { ObjectId } from "mongodb";
 
 export async function verifyJwtController(req: RequestDb, res: Response) {
 	const { email, username, signed, jwt } = req.cookies;
-    console.log(req.cookies)
 	const { db } = req.app;
 
 	// check from the provided inputs

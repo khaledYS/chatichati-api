@@ -8,6 +8,7 @@ import {assign_JWT_token, gAa_JWT_token, generate_JWT_token} from "../../utiliti
 import { validate, validateEmail, validateName, validatePassword, validatePhoneNumber, validateUsername } from "../../utilities/validate";
 import { hashPassword } from "../../utilities/hashPassword";
 import { JwtPayload, decode } from "jsonwebtoken";
+import { loginCookieResponse } from "../login/signInControllers";
 
 export async function createProfileController(req: any, res: any) {
 	try {
@@ -58,13 +59,7 @@ export async function createProfileController(req: any, res: any) {
 			// getting the end date of the jwt
 			const {exp} = decode(JWT_token.jwt) as JwtPayload;
 
-			return res
-			.status(201)
-			.cookie("jwt", JWT_token, { maxAge: exp, httpOnly: true })
-			.cookie("signed", true)
-			.cookie("username", username)
-			.cookie("email", email)
-			.json({ok: true})
+			return loginCookieResponse({jwtToken: JWT_token.jwt, exp, username, email, status:201}, res)
 		} else {
 			throw new Error("Profile could not be created");
 		}

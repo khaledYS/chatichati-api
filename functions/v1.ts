@@ -44,7 +44,7 @@ router.use("/api/logout",logoutRouter);
 
 // check the server is running
 router.get("/", (req, res) => {
-	return res.status(200).cookie("signed", true, {httpOnly: true}).json({
+	return res.status(200).json({
 		message: `the server is up and running on port ${port}`,
 	});
 	
