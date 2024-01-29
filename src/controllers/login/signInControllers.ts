@@ -151,5 +151,7 @@ export function loginCookieResponse({jwtToken, exp, email, username, status=200,
 		.cookie("signed", signed)
 		.cookie("username", username)
 		.cookie("email", email)
-		.json({ ok: true });
+		.json({email, username, signed, ok: true});
 }
+
+// create functions that tests my code above

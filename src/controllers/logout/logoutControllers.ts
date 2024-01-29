@@ -6,7 +6,7 @@ export async function logoutController(req: any, res: Response) {
 
 export function logoutCookieResponse(res: Response){
 	return res
-	.status(401)
+	.status(201)
 	.cookie("signed", false)
 	.clearCookie("jwt")
 	.clearCookie("username")
