@@ -4,7 +4,7 @@ import { dbType } from "../../routes/profile";
 import { RequestDb, findOneProfileResult, profile } from "../../mongoDataTypes";
 import { compareHashedPassword } from "../../utilities/hashPassword";
 import { gAa_JWT_token, verifyJWT } from "../../utilities/generateJWTtoken";
-import { Response } from "express";
+import { CookieOptions, Response } from "express";
 import { JwtPayload, decode } from "jsonwebtoken";
 
 export async function signInWithUsernameController(req: any, res: Response) {
@@ -145,12 +145,19 @@ interface loginCookieResponseParamters{
 	status?: number
 }
 export function loginCookieResponse({jwtToken, exp, email, username, status=200, signed=true}:loginCookieResponseParamters, res:Response){
+	const options:CookieOptions = {
+		httpOnly: true,
+		secure: true,
+        sameSite: "none",
+	}
 	return res
 		.status(status)
-		.cookie("jwt", jwtToken, { maxAge: exp, httpOnly: true, sameSite: "none", secure: true})
-		.cookie("signed", signed)
-		.cookie("username", username)
-		.cookie("email", email)
+		.cookie("jwt", jwtToken, { maxAge: exp,
+			...options
+		})
+		.cookie("signed", signed, options)
+		.cookie("username", username, options)
+		.cookie("email", email, options)
 		.json({email, username, signed, ok: true});
 }
 
