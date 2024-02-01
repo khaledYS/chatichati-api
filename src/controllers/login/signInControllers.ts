@@ -147,7 +147,7 @@ interface loginCookieResponseParamters{
 export function loginCookieResponse({jwtToken, exp, email, username, status=200, signed=true}:loginCookieResponseParamters, res:Response){
 	return res
 		.status(status)
-		.cookie("jwt", jwtToken, { maxAge: exp, httpOnly: true, sameSite: "none" })
+		.cookie("jwt", jwtToken, { maxAge: exp, httpOnly: true, sameSite: "none", secure: true})
 		.cookie("signed", signed)
 		.cookie("username", username)
 		.cookie("email", email)
