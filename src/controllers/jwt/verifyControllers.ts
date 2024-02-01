@@ -30,7 +30,6 @@ export async function verifyJwtController(req: RequestDb, res: Response) {
         username: username, 
 
     });
-    console.log(jwtProfile, emailUsernameProfile, JSON.stringify(jwtProfile) !== JSON.stringify(emailUsernameProfile) )
     if(!jwtProfile || !emailUsernameProfile ){
 	    return res.redirect("/.netlify/functions/v1/api/logout")
     }

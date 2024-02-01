@@ -6,7 +6,6 @@ export async function getProfileController(req: any, res: any) {
         const { db }:dbType = req.app;
         const {id} = req.body;
         // check the existence of the id 
-        console.log(req.headers)
         if(!id){
             res.status(400).json({
                 message: 'you should provide Id with your request',
