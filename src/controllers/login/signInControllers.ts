@@ -144,20 +144,20 @@ interface loginCookieResponseParamters{
 	email:string,
 	status?: number
 }
+export const cookieOptions:CookieOptions = {
+	httpOnly: true,
+	secure: true,
+	sameSite: "none",
+}
 export function loginCookieResponse({jwtToken, exp, email, username, status=200, signed=true}:loginCookieResponseParamters, res:Response){
-	const options:CookieOptions = {
-		httpOnly: true,
-		secure: true,
-        sameSite: "none",
-	}
 	return res
 		.status(status)
 		.cookie("jwt", jwtToken, { maxAge: exp,
-			...options
+			...cookieOptions
 		})
-		.cookie("signed", signed, options)
-		.cookie("username", username, options)
-		.cookie("email", email, options)
+		.cookie("signed", signed, cookieOptions)
+		.cookie("username", username, cookieOptions)
+		.cookie("email", email, cookieOptions)
 		.json({email, username, signed, ok: true});
 }
 
