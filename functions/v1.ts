@@ -28,7 +28,7 @@ const router = Router();
 // middlewares
 app.use(cors({
     credentials: true,
-	origin: "http://localhost:5173"
+	origin: "https://chatichati.netlify.app"
 }));
 app.use(cookieParser())
 // app.use(express.json());

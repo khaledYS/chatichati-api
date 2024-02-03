@@ -9,6 +9,7 @@ export async function verifyJwtController(req: RequestDb, res: Response) {
 	const { email, username, signed, jwt } = req.cookies;
 	const { db } = req.app;
 
+	console.log(req.cookies)
 	// check from the provided inputs
 	const validateRes = validate({ email, username });
 	if (!validateRes.ok || !jwt || !signed) {
@@ -35,5 +36,5 @@ export async function verifyJwtController(req: RequestDb, res: Response) {
     }
 
 	// return res.status(200).json({message: verifyJwtRes.message})
-	return res.status(200).json({ message: email });
+	return res.status(200).json({ ok: true, email, name: jwtProfile.name, username, signed: true });
 }

@@ -34,7 +34,7 @@ export async function signInWithUsernameController(req: any, res: Response) {
 				"Couldn't find the user you are looking for, check your inputs.",
 		});
 	}
-	const {email, username} = result;
+	const { email, username } = result;
 
 	// checking the password
 	const hashedPassword = result.password;
@@ -68,8 +68,10 @@ export async function signInWithUsernameController(req: any, res: Response) {
 
 	const { exp } = decode(jwtToken) as JwtPayload;
 
-	return loginCookieResponse({jwtToken, exp, email, username:reqUsername}, res)
-
+	return loginCookieResponse(
+		{ jwtToken, exp, email, username: reqUsername },
+		res
+	);
 }
 
 export async function signInWithEmailController(req: any, res: Response) {
@@ -93,13 +95,13 @@ export async function signInWithEmailController(req: any, res: Response) {
 	const result = await db
 		.collection("profiles")
 		.findOne<findOneProfileResult>({ email: reqEmail.toLowerCase() });
-		if (!result) {
-			return res.status(404).json({
-				message:
+	if (!result) {
+		return res.status(404).json({
+			message:
 				"Couldn't find the user you are looking for, check your inputs.",
-			});
-		}
-		const {email, username} = result;
+		});
+	}
+	const { email, username } = result;
 
 	// checking the password
 	const hashedPassword = result.password;
@@ -133,32 +135,46 @@ export async function signInWithEmailController(req: any, res: Response) {
 
 	const { exp } = decode(jwtToken) as JwtPayload;
 
-	return loginCookieResponse({jwtToken, exp, email: reqEmail, username}, res)
+	return loginCookieResponse(
+		{ jwtToken, exp, email: reqEmail, username },
+		res
+	);
 }
 
-interface loginCookieResponseParamters{
-	jwtToken:string,
-	exp: number,
-	signed?: boolean,
-	username: string,
-	email:string,
-	status?: number
+interface loginCookieResponseParamters {
+	jwtToken: string;
+	exp: number;
+	signed?: boolean;
+	username: string;
+	email: string;
+	status?: number;
 }
-export const cookieOptions:CookieOptions = {
-	httpOnly: true,
-	secure: true,
-	sameSite: "none",
+export function cookieOptions(exp?: number): CookieOptions {
+	return {
+		httpOnly: true,
+		secure: true,
+		sameSite: "none",
+		maxAge: exp ? exp : -10000 ,
+	};
 }
-export function loginCookieResponse({jwtToken, exp, email, username, status=200, signed=true}:loginCookieResponseParamters, res:Response){
+export function loginCookieResponse(
+	{
+		jwtToken,
+		exp,
+		email,
+		username,
+		status = 200,
+		signed = true,
+	}: loginCookieResponseParamters,
+	res: Response
+) {
 	return res
 		.status(status)
-		.cookie("jwt", jwtToken, { maxAge: exp,
-			...cookieOptions
-		})
-		.cookie("signed", signed, cookieOptions)
-		.cookie("username", username, cookieOptions)
-		.cookie("email", email, cookieOptions)
-		.json({email, username, signed, ok: true});
+		.cookie("jwt", jwtToken, { maxAge: exp, ...cookieOptions(exp) })
+		.cookie("signed", signed, cookieOptions(exp))
+		.cookie("username", username, cookieOptions(exp))
+		.cookie("email", email, cookieOptions(exp))
+		.json({ email, username, signed, ok: true });
 }
 
 // create functions that tests my code above
