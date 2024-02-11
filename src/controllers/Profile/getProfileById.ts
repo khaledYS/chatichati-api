@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { dbType } from "../../routes/profile";
 
-export async function getProfileController(req: any, res: any) {
+export async function getProfileByIdController(req: any, res: any) {
     try {
         const { db }:dbType = req.app;
         const {id} = req.body;
@@ -31,7 +31,13 @@ export async function getProfileController(req: any, res: any) {
 
         res.status(200).json({
             message: 'profile retrieved',
-            result
+            result:{
+                _id: result._id,
+                name: result.name,
+                username: result.username,
+                email: result.email,
+                phone: result?.phone || null,
+            }
         })
         
     } catch (error) {

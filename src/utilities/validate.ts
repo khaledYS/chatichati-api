@@ -46,7 +46,7 @@ export function validateEmail(email: string): validateReturns {
 }
 
 export function validateUsername(username: string): validateReturns {
-	if (!username || !matches(username, "^[a-zA-Z0-9_.]*$") || username.length > 10 || username.length < 3) {
+	if (!username || username.length > 10 || username.length < 3 || !matches(username, "^[a-zA-Z0-9_.]*$") ) {
 		return {
 			ok: false,
 			message:
@@ -76,7 +76,7 @@ export function validatePhoneNumber(phoneNumber: string): validateReturns {
 }
 
 export function validateName(name: string): validateReturns {
-	if (!name || name.length > 16 || name.length < 6) {
+	if (!name || name.length > 26 || name.length < 6) {
 		return {
 			ok: false,
 			message:

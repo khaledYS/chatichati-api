@@ -17,6 +17,11 @@ export async function createProfileController(req: any, res: any) {
 
         // check for the params passed in the req body
         const validatedParams = validate({name, email, phone, username, password});
+		if(!validatedParams.ok) {
+			return res
+                .status(400)
+                .json({ message: validatedParams.message });
+        }
 
 		// check if profile email exists
 		const existingEmail = await db.collection("profiles").findOne({
