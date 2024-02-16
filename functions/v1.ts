@@ -5,11 +5,14 @@ import body from "body-parser"
 import cors from "cors"
 import dotenv from "dotenv"
 import cookieParser from "cookie-parser"
-import profileRouter from "../src/routes/profile"
-import jwtRouter from "../src/routes/jwt"
-import loginRouter from "../src/routes/login"
-import logoutRouter from "../src/routes/logout"
 import { expressDb } from "../src/mongoDataTypes";
+import {
+    profileRouter, 
+    jwtRouter, 
+    loginRouter, 
+    logoutRouter,
+    chatsRouter
+} from "../src/routes/routersIndex"
 
 dotenv.config();
 
@@ -44,6 +47,7 @@ router.use("/api/profile",profileRouter);
 router.use("/api/jwt",jwtRouter);
 router.use("/api/login",loginRouter);
 router.use("/api/logout",logoutRouter);
+router.use("/api/chats", chatsRouter);
 
 // check the server is running
 router.get("/", (req, res) => {

@@ -8,6 +8,7 @@ export interface profile{
     password: string;
     phone: string;
     jwt?: string;
+    chats: string[];
 }
 
 export type findOneProfileResult = profile | null;
@@ -16,5 +17,6 @@ export interface expressDb extends Express{
 	db?: Db
 }
 export interface RequestDb extends Request{
-	app:expressDb
+	app:expressDb, 
+    user?: profile | null;
 }

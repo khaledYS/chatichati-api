@@ -3,17 +3,18 @@ import matches from "validator/lib/matches";
 import isEmail from "validator/lib/isEmail";
 import isEmpty from "validator/lib/isEmpty";
 import isMobilePhone from "validator/lib/isMobilePhone";
-import { ProfileParamters, dbType } from "../../routes/profile";
+import { dbType } from "../../routes/profile";
 import {assign_JWT_token, gAa_JWT_token, generate_JWT_token} from "../../utilities/generateJWTtoken"
 import { validate, validateEmail, validateName, validatePassword, validatePhoneNumber, validateUsername } from "../../utilities/validate";
 import { hashPassword } from "../../utilities/hashPassword";
 import { JwtPayload, decode } from "jsonwebtoken";
 import { loginCookieResponse } from "../login/signInControllers";
+import { profile } from "../../mongoDataTypes";
 
 export async function createProfileController(req: any, res: any) {
 	try {
 		const { db }:dbType = req.app;
-		const { name, email, phone, username, password }: ProfileParamters = req.body;
+		const { name, email, phone, username, password }: profile = req.body;
 
         // check for the params passed in the req body
         const validatedParams = validate({name, email, phone, username, password});

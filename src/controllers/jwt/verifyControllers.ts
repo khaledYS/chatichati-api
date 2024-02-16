@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
-import { ProfileParamters, dbType } from "../../routes/profile";
 import { JwtPayload, verifyJWT } from "../../utilities/generateJWTtoken";
 import { validate } from "../../utilities/validate";
-import { RequestDb, expressDb } from "../../mongoDataTypes";
+import { RequestDb, expressDb, profile } from "../../mongoDataTypes";
 import { ObjectId } from "mongodb";
 
 export async function verifyJwtController(req: RequestDb, res: Response) {
@@ -23,10 +22,10 @@ export async function verifyJwtController(req: RequestDb, res: Response) {
 	}
 
     // verifying the jwt matches with the email and username
-    const jwtProfile = await db.collection("profiles").findOne<ProfileParamters>({
+    const jwtProfile = await db.collection("profiles").findOne<profile>({
         _id: new ObjectId(verifyJwtRes.message.id)
     });
-    const emailUsernameProfile = await db.collection("profiles").findOne<ProfileParamters>({
+    const emailUsernameProfile = await db.collection("profiles").findOne<profile>({
         email: email,
         username: username, 
 
