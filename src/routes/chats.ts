@@ -5,6 +5,7 @@ import { authenticateJwtTokenMiddleware } from "../middlewares/authenticateJwtTo
 const router = Router();
 
 router.get('/', authenticateJwtTokenMiddleware, getUserChatsController)
+router.post('/message', authenticateJwtTokenMiddleware, addMessageController)
 
 
 export default router;

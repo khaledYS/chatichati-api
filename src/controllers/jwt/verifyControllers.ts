@@ -8,7 +8,6 @@ export async function verifyJwtController(req: RequestDb, res: Response) {
 	const { email, username, signed, jwt } = req.cookies;
 	const { db } = req.app;
 
-	console.log(req.cookies)
 	// check from the provided inputs
 	const validateRes = validate({ email, username });
 	if (!validateRes.ok || !jwt || !signed) {
